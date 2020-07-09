@@ -1,0 +1,50 @@
+# Cloud_project
+fullly functional CAAS with lot more like SAAS , virtual machine
+
+
+Requirements:- yum configured Rhel-7 :- httpd websever installed and configured with sevice enabled $ yum install python ( for ansible playbook) $ yum install python36 (for all cgi file to be execute) $ yum install python-pip $ yum install httpd $ systemctl enable httpd --now $ yum install ansible --> /etc/ansible/hosts enter the ips (inventry file) --> /etc/ansible/ansible.cfg uncomment the hostkeychecking = false line( so that ssh not promt yes or no for ansible to work) $ yum install openssh-server openssh-client $ ssh-keygen $ ssh-copy-id ip(of main os) ( for ansible to ssh the main os) $ systemctl enable sshd --now --> /etc/sudoers enter apache ALL=(ALL) NOPASSWD: ALL ( because all the commands will be executed by apache user)
+issue:- Selinux security Firewall security solution :- $ iptables -F (write this command in /etc/rc.local ---this file run the commands on every boot) $ chmod +x /etc/rc.d/rc.local ( to make rc.local executable ) $ systemctl disable firewalld >> In /etc/selinux/config ----> set SELINUX=Permissive $ reboot :- File Permission solution:- $ chmod 0777 filename ################ Concept ################## apache user execute the python cgi file with its own power so we set the executable permissiion of all cgi files (chmod +x file.py) also all the instruction in python script ( example to create the files ) will be run by apache so give permission of
+corresponding file to apache(chmod o+rwx file)
+Minimal OS Requirements:- openssh-server and openssh-client software installed (for os to ssh itself) :- shellinabox software installed and service enabled (change the configuration file :{uncomment last line and do necessary change in the same file}) :- curl on the port mention in conf file Commands :- $ yum install shellinabox $ systemctl enable shellinaboxd.service --now
+Full OS with GUI
+Requirements:- $ yum install tigervnc-server -y $ cp /lib/systemd/system/vncserver@.service /etc/systemd/system/vncserver@:x.service >> x---> is the free 2 digit port available from range 00 t0 99( convert to 59x) let x=09 >> in /etc/systemd/system/vncserver@9.service change by the desired user name (Do create the user first) $ su - username $ vncserver (run this command in the user mention above this will make this user to export its gui) $ exit (to come back to root) $ systemctl daemon-reload (reload all the deamon services) $ systemctl restart vncserver@:9.service $ yum install novnc (this tool make the usercreated above to be access by the http protocol) Issue :- we can't enable vncserver service as it will start the daemon on every boot but service will not start and system will hang
+solution:- we schedule the resatart service job in rc.local file
+:- if we run $ novnc_server --vnc ip:59x --port newport this command hold the screen for all time solution:- schedule this job in cron through ansile automation :- many temporary socket devices created by vncserver for export gui this lead to excess usage of limited resources solution [ $ /usr/bin/rm -f /tmp/.X11-unix/* ] <---- schdule it in cron :- interactive commands like ($ vncserver , $ passwd root , ...) use expect module of ansible whose is pexpect python module solution --> $ pip install pexpect
+Container as a service :- $ yum install docker-ce $ docker pull centos
+        ############ centos image  ############### 
+        $ yum install shellinabox
+        $ yum install httpd  (as sheellinabox make this container available for web i,e http protocol)
+        --> /etc/sysconfig/shellinaboxd  chage the ssh destination to localhost
+        $ yum install openssh* -y
+        $ sshd-keygen
+        $ passwd root (used in the login menu)
+        $ commit this docker
+-----> run these three commands outside docker to  lauch the new docker which is accesible 
+        through port mention in paating in docker run command by http protocol
+    
+    ***********************************************************************************    
+str1="sudo docker run -dit --name=" + name + " -p "+ port + ":"+ port + " prabhat625/caas:v3"
+str3="sudo docker exec -d "+name+" /usr/sbin/sshd -f /etc/ssh/sshd_config"   (restart sshd service in docker)
+str2="sudo docker exec -d  "+ name + " /usr/sbin/shellinaboxd -u shellinabox -g shellinabox --cert=/var/lib/shellinabox --port=" + port + " -t -s /:SSH:localhost"
+   (restart shellinabox service in docker)
+   **************************************************************************************                   
+        
+        
+        ######## ubuntu:14.04 image #############
+        $ sudo apt-get update
+        $ sudo aot-get install shellinabox
+        --> /etc/default/shellinabox change the default port (this port will be used to launch the 
+            docker) and append "-t -s SSH:/localhost/" in SSH ARGUMENTS
+        $ sudo adduser username (this user will be used in the login menu)
+        $ sudo passwd username
+        --> vim /etc/sudoers give sudo power to the user added 
+            add this line "username (ALL:ALL)   NOPASSWD: ALL"
+        --> sudo vim /usr/sbin/policy-rc.d change exit from 101 to 0
+        $ commit this docker
+        -----> run these three commands outside docker to  lauch the new docker which is accesible 
+        through port mention in paating in docker run command by http protocol
+        
+     *********************************************************************************
+ str1="sudo docker run -dit --name=" + name + " -p "+ port +  ":8888 prabhat625/ubuntucaas:v1"
+ str2="sudo docker exec -d  "+ name + " sudo invoke-rc.d shellinabox start" (restart shellinabox service in docker)
+     *********************************************************************************
