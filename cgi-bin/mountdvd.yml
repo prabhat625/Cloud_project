@@ -1,0 +1,10 @@
+- hosts: all
+  vars_files:
+      - mountvar.yml
+  tasks:
+      - mount:
+            path: "{{ mountpoint }}"
+            src: /dev/sr0
+            fstype: iso9660
+            opts: ro,noauto
+            state: present

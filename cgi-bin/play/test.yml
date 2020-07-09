@@ -1,0 +1,14 @@
+- hosts: localhost
+  vars_prompt: 
+         - name: "user"
+           private: no
+         - name: "passwd"
+           private: no
+  tasks:
+    - user:
+         name: "{{ user }}"
+         state: present
+    - expect:
+         command: 'passwd "{{ user }}"'
+         responses:
+            (?i)password: "{{ passwd }}"

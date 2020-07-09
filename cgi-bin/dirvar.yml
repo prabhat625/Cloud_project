@@ -1,0 +1,4 @@
+dirpath: "/root/Desktop/dis"
+own: "root"
+grp: "root"
+mod: "0777"

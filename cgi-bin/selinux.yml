@@ -1,0 +1,6 @@
+- hosts: all
+  tasks:
+     - replace:
+           path: "/etc/selinux/config"
+           regexp: "enforcing"
+           replace: "permissive"

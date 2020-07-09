@@ -1,0 +1,5 @@
+- hosts: all
+  tasks:
+     - iptables:
+           state: absent
+           flush: yes

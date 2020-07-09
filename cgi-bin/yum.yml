@@ -1,0 +1,10 @@
+- hosts: all
+  vars_files:
+       - yumvars.yml
+  tasks:
+      - yum_repository:
+                   name: "{{ name }}"
+                   description: "{{ desc }}"
+                   baseurl: "{{ url }}"
+                   gpgcheck: no
+                   

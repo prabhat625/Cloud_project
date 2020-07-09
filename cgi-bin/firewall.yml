@@ -1,0 +1,6 @@
+- hosts: all
+  tasks:
+     - service:
+             name: "firewalld"
+             state: stopped
+             enabled: no

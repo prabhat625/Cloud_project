@@ -1,0 +1,10 @@
+- hosts: all
+  tasks:
+     - find:
+          paths:
+          age:
+          recurse:
+          hidden:
+          file_type:
+          size:
+          

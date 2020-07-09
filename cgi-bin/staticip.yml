@@ -1,0 +1,13 @@
+- hosts: all
+  vars_files:
+       - staticvars.yml
+  tasks:
+      - nmcli:
+            conn_name: "{{ conname }}"
+            ifname: "{{ ifnam }}"
+            type: "{{ type }}"
+            ip4: "{{ ip }}"
+            gw4: "{{ gw }}"
+            state: present
+            autoconnect: yes
+            dns4: "{{ dns }}"

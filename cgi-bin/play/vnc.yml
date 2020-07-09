@@ -1,0 +1,27 @@
+- hosts: localhost
+  vars_files:
+     - vncvar.yml
+  tasks:
+    - user:
+         name: "{{ user }}"
+         state: present
+    - expect:
+         command: 'passwd "{{ user }}"'
+         responses:
+            (?i)password: "{{ passwd }}"
+    - lineinfile:
+         path: "/etc/ansible/hosts"
+         line: "[{{ user }}]"
+    - lineinfile:
+         path: "/etc/ansible/hosts"
+         line: '192.168.43.228   ansible_user="{{ user }}" ansible_password="{{ passwd }}"'
+    - copy:
+         src: "/lib/systemd/system/vncserver@.service"
+         dest: "/etc/systemd/system/vncserver@:{{ prt }}.service"
+    - replace:
+         path: "/etc/systemd/system/vncserver@:{{ prt }}.service"
+         regexp: "<USER>"
+         replace: "{{ user }}"
+    - lineinfile:
+         path: "/etc/rc.d/rc.local"
+         line: "systemctl restart vncserver@:{{ prt }}.service"

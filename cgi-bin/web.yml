@@ -1,0 +1,23 @@
+- hosts: all
+  vars_files:
+      - webvar.yml
+  tasks:
+    - name: "installing httpd"
+      package: 
+        name: "httpd"
+        state:  "present"
+    - name: "copying index.html"
+      copy: 
+          content: "{{ content }}"
+          dest: "/var/www/html/{{ name }}"
+    - name: "starting httpd service"
+      service:
+         name: "httpd"
+         enabled: yes
+         state: "started"
+    - name: " stoping firewall services"
+      firewalld:
+         state: enabled
+         port: "80/tcp"
+         immediate: yes
+         permanent: yes

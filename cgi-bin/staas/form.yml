@@ -1,0 +1,39 @@
+- hosts: 192.168.43.228
+  vars_files:
+     - var.yml
+  tasks:
+    - parted:
+          device: /dev/sdb
+          state: present
+          part_start: "{{ start }}KiB"
+          part_end: "{{ end  }}KiB"
+          number: "{{ number  }}"
+    - command: "partprobe"
+    - filesystem:
+          fstype: ext4
+          dev: "/dev/sdb{{ number }}"
+    - file:
+          path: "/{{ username }}{{ number }}"
+          state: directory
+          mode: 0777
+    - mount:
+         path: "/{{ username }}{{ number }}"
+         src: "/dev/sdb{{ number }}"
+         fstype: ext4
+         state: mounted
+    - lineinfile:
+         path: "/etc/exports"
+         line: "/{{ username }}{{ number }}  *(rw)"
+    - command: "chmod 0777 /{{username}}{{ number }}"
+    - service:
+         name: "nfs"
+         state: restarted
+         enabled: yes
+    - lineinfile:
+         path: "/etc/ansible/hosts"
+         line: "[{{ username }}{{ number }}]"
+    - lineinfile:
+         path: "/etc/ansible/hosts"
+         line: "{{ ip }} ansible_user={{ username }} ansible_password={{ passwd }}"
+
+

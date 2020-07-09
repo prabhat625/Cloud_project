@@ -1,0 +1,8 @@
+- hosts: localhost
+  vars_files:
+    - vncvar.yml
+  tasks:
+    - cron:
+         name: "{{ prt1 }}"
+         job: "/usr/bin/novnc_server --listen {{ prt1 }} --vnc 192.168.43.228:59{{ prt }}"
+         state: present

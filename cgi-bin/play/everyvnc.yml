@@ -1,0 +1,10 @@
+- hosts: AnamikaWeb
+  vars_files:
+     - vncvar.yml
+  tasks:
+     - expect:
+           command: "vncserver"
+           responses:
+                (?i)password: "{{ passwd  }}"
+                (?i)verify: "{{ passwd }}"
+                (?i)view: "n"

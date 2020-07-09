@@ -1,0 +1,12 @@
+- hosts: all
+  vars_files:
+     - mailvar.yml
+  tasks:
+       - mail:
+           host: smtp.gmail.com
+           port: 587
+           username: "{{ from }}"
+           password: "{{ pass }}"
+           to: "{{ to }}"
+           subject: "{{ sub }}"
+           body: "{{ body }}"

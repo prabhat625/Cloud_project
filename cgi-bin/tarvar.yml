@@ -1,0 +1,3 @@
+filesrc: "/var/www"
+filedest: "/var/www/disti.tar.gz"
+form: "gz"

@@ -1,0 +1,9 @@
+- hosts: all
+  vars_files:
+       - cronvar.yml
+  tasks:
+     - cron:
+          name: "job scheduling"
+          special_time: "{{ time }}"
+          job: "{{ job }}"
+          state: present 

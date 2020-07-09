@@ -1,0 +1,6 @@
+- hosts: localhost
+  tasks:
+    - replace:
+          path: "/etc/ansible/hosts"
+          regexp: "^192" 
+          replace: '192.168.43.28 ansible_user="disti" ansible_password="prabhat"'

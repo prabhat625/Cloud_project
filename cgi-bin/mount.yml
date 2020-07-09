@@ -1,0 +1,9 @@
+- hosts: all
+  vars_files:
+      - mountvars.yml
+  tasks:
+     - mount: 
+          path: "{{ mountpoint }}"
+          src: "{{ partition}}"
+          fstype: "{{ formattype }}"
+          state: mounted

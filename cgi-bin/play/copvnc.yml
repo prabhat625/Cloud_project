@@ -1,0 +1,29 @@
+- hosts: localhost
+  vars_prompt:
+      - name: user
+        private: no
+        prompt: "enter username"
+      - name: passwd
+        private: no
+        prompt: "enter password"
+      - name: port
+        private: no
+        prompt: "enter port"
+  tasks:
+    - user:
+         name: "{{ user }}"
+         state: present
+         password: "{{ passwd }}"
+    - lineinfile:
+         path: "/etc/ansible/hosts"
+         line: "[{{ user }}]"
+    - lineinfile:
+         path: "/etc/ansible/hosts"
+         line: '192.168.43.176   ansible_user="{{ user }}" ansible_password="{{ passwd }}"'
+    - copy:
+         src: "/lib/systemd/system/vncserver@.service"
+         dest: "/etc/systemd/system/vncserver@:{{ port }}.service"
+    - replace:
+         path: "/etc/systemd/system/vncserver@:{{ port }}.service"
+         regexp: "<USER>"
+         replace: "{{ user }}"

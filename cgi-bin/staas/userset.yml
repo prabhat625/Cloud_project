@@ -1,0 +1,8 @@
+  vars_files:
+      - var.yml
+  tasks:
+     - file:
+          path: "/root/Desktop/staas"
+          state: directory
+          mode: 0777
+     - command: "mount 192.168.43.228:/{{ username }}{{ number }} /root/Desktop/staas"

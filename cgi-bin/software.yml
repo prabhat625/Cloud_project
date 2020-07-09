@@ -1,0 +1,8 @@
+- hosts: all
+  vars_files:
+       - softvars.yml
+  tasks:
+     - package:
+           name: "{{ packname }}"
+           state: present
+
